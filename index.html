@@ -96,6 +96,7 @@
     .cross-link {
       display: inline-flex;
       align-items: center;
+      margin-left: auto;
       gap: 0.4rem;
       padding: 0.5rem 0.95rem;
       border-radius: 999px;
@@ -116,6 +117,9 @@
     }
     @media (prefers-color-scheme: light) {
       .cross-link { color: var(--accent); background: rgba(0,132,156,0.07); }
+    }
+    @media (max-width: 480px) {
+      .cross-link .cl-extra { display: none; }
     }
 
     .toolbar {
@@ -482,7 +486,7 @@
       <img class="logotype for-light" src="images/logotype-black.png" alt="Solidicon">
       <span class="sub">Retail</span>
     </div>
-    <a class="cross-link" id="linksLink" href="https://solidicon-ab.github.io/links/">Online Games &rarr;</a>
+    <a class="cross-link" id="linksLink" href="https://solidicon-ab.github.io/links/">Online<span class="cl-extra"> Games</span> &rarr;</a>
   </header>
 
   <div class="toolbar">
