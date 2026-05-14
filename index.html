@@ -93,6 +93,30 @@
       text-transform: uppercase;
       letter-spacing: 0.2em;
     }
+    .cross-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 0.95rem;
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      color: var(--accent-bright);
+      background: rgba(0,172,203,0.08);
+      font-family: 'Kanit', system-ui, sans-serif;
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
+    }
+    .cross-link:hover {
+      background: rgba(0,172,203,0.18);
+      box-shadow: 0 0 12px rgba(0,214,252,0.35);
+    }
+    @media (prefers-color-scheme: light) {
+      .cross-link { color: var(--accent); background: rgba(0,132,156,0.07); }
+    }
 
     .toolbar {
       display: flex;
@@ -271,6 +295,9 @@
     .tag.casino  { background: #f65221; }
     .tag.instant { background: #00accb; }
     .tag.vfl     { background: #1e456a; }
+    .tag.pachinko { background: #c2185b; }
+    .tag.roulette { background: #0d8050; }
+    .tag.keno    { background: #ca8a04; }
 
     .player {
       position: fixed;
@@ -455,6 +482,7 @@
       <img class="logotype for-light" src="images/logotype-black.png" alt="Solidicon">
       <span class="sub">Retail</span>
     </div>
+    <a class="cross-link" href="https://solidicon-ab.github.io/links/">Online Games &rarr;</a>
   </header>
 
   <div class="toolbar">
@@ -641,15 +669,7 @@
       <div class="thumb" style="background-image:url('images/spin-win.png')"></div>
       <div class="meta">
         <div class="title">Spin Win</div>
-        <div class="tags"><span class="tag instant">Instant</span></div>
-      </div>
-    </a>
-
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=2">
-      <div class="thumb" style="background-image:url('images/color-keno.png')"></div>
-      <div class="meta">
-        <div class="title">Color Keno</div>
-        <div class="tags"><span class="tag casino">Casino</span></div>
+        <div class="tags"><span class="tag roulette">Roulette</span></div>
       </div>
     </a>
 
@@ -657,7 +677,7 @@
       <div class="thumb" style="background-image:url('images/roulette.png')"></div>
       <div class="meta">
         <div class="title">Roulette</div>
-        <div class="tags"><span class="tag casino">Casino</span></div>
+        <div class="tags"><span class="tag roulette">Roulette</span></div>
       </div>
     </a>
 
@@ -665,15 +685,15 @@
       <div class="thumb" style="background-image:url('images/willy-win.png')"></div>
       <div class="meta">
         <div class="title">Willy Win</div>
-        <div class="tags"><span class="tag slot">Slot</span></div>
+        <div class="tags"><span class="tag roulette">Roulette</span></div>
       </div>
     </a>
 
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=4">
-      <div class="thumb" style="background-image:url('images/triple-towers.png')"></div>
+    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=2">
+      <div class="thumb" style="background-image:url('images/color-keno.png')"></div>
       <div class="meta">
-        <div class="title">Triple Towers</div>
-        <div class="tags"><span class="tag slot">Slot</span></div>
+        <div class="title">Keno</div>
+        <div class="tags"><span class="tag keno">Keno</span></div>
       </div>
     </a>
 
@@ -688,7 +708,7 @@
     <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=9">
       <div class="thumb" style="background-image:url('images/burning-hot-classics.png')"></div>
       <div class="meta">
-        <div class="title">Burning Hot Classics</div>
+        <div class="title">Blazing Classics</div>
         <div class="tags"><span class="tag slot">Slot</span></div>
       </div>
     </a>
@@ -717,19 +737,11 @@
       </div>
     </a>
 
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=6">
-      <div class="thumb" style="background-image:url('images/tt-on-reels.png')"></div>
-      <div class="meta">
-        <div class="title">TT on reels</div>
-        <div class="tags"><span class="tag instant">Instant</span></div>
-      </div>
-    </a>
-
     <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=13">
       <div class="thumb" style="background-image:url('images/lucky-wheel.png')"></div>
       <div class="meta">
         <div class="title">Lucky Wheel</div>
-        <div class="tags"><span class="tag casino">Casino</span></div>
+        <div class="tags"><span class="tag casino">Casino</span><span class="tag instant">Instant</span></div>
       </div>
     </a>
 
@@ -741,19 +753,35 @@
       </div>
     </a>
 
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=20">
-      <div class="thumb" style="background-image:url('images/instantpl.png')"></div>
-      <div class="meta">
-        <div class="title">InstantPL</div>
-        <div class="tags"><span class="tag instant">Instant</span></div>
-      </div>
-    </a>
-
     <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=25">
       <div class="thumb" style="background-image:url('images/tikiplinko.png')"></div>
       <div class="meta">
-        <div class="title">TikiPlinko</div>
-        <div class="tags"><span class="tag casino">Casino</span></div>
+        <div class="title">Plinko Tiki</div>
+        <div class="tags"><span class="tag pachinko">Pachinko</span></div>
+      </div>
+    </a>
+
+    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=4">
+      <div class="thumb" style="background-image:url('images/triple-towers.png')"></div>
+      <div class="meta">
+        <div class="title">Triple Towers</div>
+        <div class="tags"><span class="tag vfl">Virtual Sports</span></div>
+      </div>
+    </a>
+
+    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=6">
+      <div class="thumb" style="background-image:url('images/tt-on-reels.png')"></div>
+      <div class="meta">
+        <div class="title">TT on reels</div>
+        <div class="tags"><span class="tag vfl">Virtual Sports</span></div>
+      </div>
+    </a>
+
+    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=20">
+      <div class="thumb" style="background-image:url('images/instantpl.png')"></div>
+      <div class="meta">
+        <div class="title">Retro Football</div>
+        <div class="tags"><span class="tag vfl">Virtual Sports</span></div>
       </div>
     </a>
 
@@ -761,7 +789,7 @@
       <div class="thumb" style="background-image:url('images/vfl-serie-a.png')"></div>
       <div class="meta">
         <div class="title">VFL Italian Serie A</div>
-        <div class="tags"><span class="tag vfl">VFL</span></div>
+        <div class="tags"><span class="tag vfl">Virtual Sports</span></div>
       </div>
     </a>
 
@@ -769,7 +797,7 @@
       <div class="thumb" style="background-image:url('images/vfl-epl.png')"></div>
       <div class="meta">
         <div class="title">VFL English Premier League</div>
-        <div class="tags"><span class="tag vfl">VFL</span></div>
+        <div class="tags"><span class="tag vfl">Virtual Sports</span></div>
       </div>
     </a>
 
@@ -777,7 +805,7 @@
       <div class="thumb" style="background-image:url('images/vfl-french-liga.png')"></div>
       <div class="meta">
         <div class="title">VFL French Liga</div>
-        <div class="tags"><span class="tag vfl">VFL</span></div>
+        <div class="tags"><span class="tag vfl">Virtual Sports</span></div>
       </div>
     </a>
 
@@ -785,7 +813,7 @@
       <div class="thumb" style="background-image:url('images/vfl-spanish-la-liga.png')"></div>
       <div class="meta">
         <div class="title">VFL Spanish La Liga</div>
-        <div class="tags"><span class="tag vfl">VFL</span></div>
+        <div class="tags"><span class="tag vfl">Virtual Sports</span></div>
       </div>
     </a>
 
