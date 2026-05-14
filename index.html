@@ -159,39 +159,6 @@
     }
     .toolbar input[type="text"]::placeholder { color: var(--muted); opacity: 0.7; }
 
-    .dev-bar {
-      margin-top: -0.5rem;
-      border-color: rgba(0,172,203,0.32);
-      background:
-        linear-gradient(180deg, rgba(0,172,203,0.07), rgba(0,172,203,0.02)),
-        var(--card);
-      position: relative;
-      justify-content: center;
-    }
-    .dev-bar + .dev-bar { margin-top: 0.25rem; }
-    body.dev-on .dev-bar { margin-bottom: 0.7rem; }
-    body.dev-on .dev-bar:last-of-type { margin-bottom: 1.4rem; }
-    @media (prefers-color-scheme: light) {
-      .dev-bar {
-        border-color: rgba(0,132,156,0.3);
-        background: linear-gradient(180deg, rgba(0,132,156,0.06), rgba(0,132,156,0.01)), var(--card);
-      }
-    }
-    .dev-bar-label {
-      position: absolute;
-      top: -0.65rem;
-      left: 0.85rem;
-      padding: 0 0.5rem;
-      background: var(--bg);
-      font-family: 'Kanit', system-ui, sans-serif;
-      font-size: 0.6rem;
-      font-weight: 600;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
-    .dev-bar .advanced-toggle { margin-left: 0; }
-
     .grid {
       display: grid;
       gap: 0.7rem;
@@ -304,15 +271,6 @@
     .tag.casino  { background: #f65221; }
     .tag.instant { background: #00accb; }
     .tag.vfl     { background: #1e456a; }
-    .tag.gamecode {
-      background: rgba(0,172,203,0.12);
-      color: var(--accent-bright);
-      font-family: 'Fragment Mono', ui-monospace, "SF Mono", Menlo, monospace;
-      letter-spacing: 0.02em;
-    }
-    @media (prefers-color-scheme: light) {
-      .tag.gamecode { color: var(--accent); background: rgba(0,132,156,0.1); }
-    }
 
     .player {
       position: fixed;
@@ -488,61 +446,6 @@
       aspect-ratio: 16 / 9;
     }
 
-    .advanced-toggle {
-      display: flex;
-      align-items: center;
-      gap: 0.55rem;
-      margin-left: auto;
-      cursor: pointer;
-      user-select: none;
-      font-family: 'Kanit', system-ui, sans-serif;
-      font-size: 0.68rem;
-      font-weight: 500;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-    }
-    @media (max-width: 599px) {
-      .advanced-toggle { margin-left: 0; }
-    }
-    .advanced-toggle input { position: absolute; opacity: 0; pointer-events: none; }
-    .dev-only { display: none !important; }
-    body.dev-on .dev-only { display: flex !important; }
-    .advanced-toggle .switch {
-      position: relative;
-      width: 2.4rem;
-      height: 1.25rem;
-      border-radius: 999px;
-      background: var(--bg-2);
-      border: 1px solid var(--border);
-      transition: background 0.18s ease, border-color 0.18s ease;
-      flex-shrink: 0;
-    }
-    .advanced-toggle .switch::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 0.15rem;
-      width: 0.85rem;
-      height: 0.85rem;
-      border-radius: 999px;
-      background: var(--muted);
-      transform: translateY(-50%);
-      transition: left 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
-    }
-    .advanced-toggle input:checked + .switch {
-      background: rgba(0,172,203,0.18);
-      border-color: var(--accent);
-    }
-    .advanced-toggle input:checked + .switch::after {
-      left: calc(100% - 1rem);
-      background: var(--accent-bright);
-      box-shadow: 0 0 8px rgba(0,214,252,0.6);
-    }
-    .advanced-toggle input:focus-visible + .switch {
-      box-shadow: 0 0 0 3px rgba(0,172,203,0.25);
-    }
-    .advanced-toggle input:checked ~ .lbl { color: var(--accent); }
   </style>
 </head>
 <body>
@@ -555,7 +458,7 @@
   </header>
 
   <div class="toolbar">
-    <label data-tip="URL param: languageCode. Pariplay launcher strips region (pt-br → pt) and maps es ↔ es-mx.">Launch Language
+    <label>Launch Language
       <select id="langSel">
         <option value="en">🇬🇧 English</option>
         <option value="fr">🇫🇷 French</option>
@@ -566,7 +469,7 @@
         <option value="el">🇬🇷 Greek</option>
       </select>
     </label>
-    <label data-tip="URL param: currencyCode. Used by Pariplay launcher to build the Atropos AccountId (free_<cur>_<lang>_pariplay_...). When Wallet Balance is set, this also gets forwarded as FakeCultureCode.">Launch Currency
+    <label>Launch Currency
       <select id="curSel">
         <optgroup label="Featured">
           <option value="usd">usd — US Dollar</option>
@@ -730,75 +633,23 @@
         </optgroup>
       </select>
     </label>
-    <label class="advanced-toggle" data-tip="Reveals Launch dev controls — Pariplay wrapper params (wallet/branding/operator/home url) and isReal/fullscreen toggles." data-tip-always="1">
-      <input type="checkbox" id="advToggle">
-      <span class="switch"></span>
-      <span class="lbl">Dev mode</span>
-    </label>
-  </div>
-
-  <div class="toolbar dev-bar dev-only">
-    <span class="dev-bar-label">Launch dev controls</span>
-    <label data-tip="URL params: FakeMode=test + FakeWalletBalance + FakeCultureCode + FakePlayerName. Pariplay launcher only honors FakeMode when isReal is false (the default). Sets the wallet balance in major units of the selected currency.">Wallet Balance
-      <input type="text" id="walletInp" placeholder="e.g. 100" inputmode="decimal" autocomplete="off">
-    </label>
-    <label data-tip="URL param: branding (lowercase). Overrides any operator-derived branding. Use the backend branding value (e.g. dafabet, worldcup, onexbet, melbet, elephant-bet).">Branding override
-      <input type="text" id="brandingInp" placeholder="e.g. worldcup" autocomplete="off" spellcheck="false">
-    </label>
-    <label data-tip="URL param: extraData=operatorcode=&lt;CODE&gt;. Pariplay launcher reads operatorcode from extraData and uses it to set branding automatically (VDB hides home button on desktop, KZGH enables Fusion vendor integration, others set branding=&lt;operator&gt;).">Operator code
-      <input type="text" id="operatorInp" placeholder="e.g. VDB" autocomplete="off" spellcheck="false">
-    </label>
-    <label data-tip="URL param: homeUrl. Maps to NavigateToOnExit on the game. Use (api) to send a message:_quit postMessage to the host instead of navigating.">Home URL
-      <input type="text" id="homeUrlInp" placeholder="(api) or https://..." autocomplete="off" spellcheck="false">
-    </label>
-    <label class="advanced-toggle" data-tip="URL param: isReal=true. Default is false → launcher swaps Processor to Fakeit and auto-generates a ClientToken. Turn on to hit real Pariplay.">
-      <input type="checkbox" id="isRealChk">
-      <span class="switch"></span>
-      <span class="lbl">isReal</span>
-    </label>
-    <label class="advanced-toggle" data-tip="URL param: AllowFullScreenToggle=true. Lets the game show its own fullscreen control. Default is false.">
-      <input type="checkbox" id="allowFsChk">
-      <span class="switch"></span>
-      <span class="lbl">Allow fullscreen</span>
-    </label>
-    <label class="advanced-toggle" data-tip="URL param: NoBackgroundFill=false. Default is true (the game leaves the host bg empty). Turn on to make the game fill its own background.">
-      <input type="checkbox" id="bgFillChk">
-      <span class="switch"></span>
-      <span class="lbl">Game fills background</span>
-    </label>
   </div>
 
   <div class="grid">
-
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=2">
-      <div class="thumb" style="background-image:url('images/color-keno.png')"></div>
-      <div class="meta">
-        <div class="title">Color Keno</div>
-        <div class="tags"><span class="tag casino">Casino</span><span class="tag gamecode">SIC_2</span></div>
-      </div>
-    </a>
 
     <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=3">
       <div class="thumb" style="background-image:url('images/spin-win.png')"></div>
       <div class="meta">
         <div class="title">Spin Win</div>
-        <div class="tags"><span class="tag instant">Instant</span><span class="tag gamecode">SIC_3</span></div>
+        <div class="tags"><span class="tag instant">Instant</span></div>
       </div>
     </a>
 
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=4">
-      <div class="thumb" style="background-image:url('images/triple-towers.png')"></div>
+    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=2">
+      <div class="thumb" style="background-image:url('images/color-keno.png')"></div>
       <div class="meta">
-        <div class="title">Triple Towers</div>
-        <div class="tags"><span class="tag slot">Slot</span><span class="tag gamecode">SIC_4</span></div>
-      </div>
-    </a>
-
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=6">
-      <div class="thumb" style="background-image:url('images/tt-on-reels.png')"></div>
-      <div class="meta">
-        <div class="title">TT on reels</div>
-        <div class="tags"><span class="tag instant">Instant</span><span class="tag gamecode">SIC_6</span></div>
+        <div class="title">Color Keno</div>
+        <div class="tags"><span class="tag casino">Casino</span></div>
       </div>
     </a>
 
@@ -806,99 +657,7 @@
       <div class="thumb" style="background-image:url('images/roulette.png')"></div>
       <div class="meta">
         <div class="title">Roulette</div>
-        <div class="tags"><span class="tag casino">Casino</span><span class="tag gamecode">SIC_7</span></div>
-      </div>
-    </a>
-
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=8">
-      <div class="thumb" style="background-image:url('images/treasure-tavern.png')"></div>
-      <div class="meta">
-        <div class="title">Treasure Tavern</div>
-        <div class="tags"><span class="tag slot">Slot</span><span class="tag gamecode">SIC_8</span></div>
-      </div>
-    </a>
-
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=9">
-      <div class="thumb" style="background-image:url('images/burning-hot-classics.png')"></div>
-      <div class="meta">
-        <div class="title">Burning Hot Classics</div>
-        <div class="tags"><span class="tag slot">Slot</span><span class="tag gamecode">SIC_9</span></div>
-      </div>
-    </a>
-
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=12">
-      <div class="thumb placeholder">
-        <img class="ph-logo for-dark"  src="images/logo-icon-white.png" alt="" aria-hidden="true">
-        <img class="ph-logo for-light" src="images/logo-icon-black.png" alt="" aria-hidden="true">
-        <div class="ph-text">Gamble</div>
-      </div>
-      <div class="meta">
-        <div class="title">Gamble</div>
-        <div class="tags"><span class="tag instant">Instant</span><span class="tag gamecode">SIC_12</span></div>
-      </div>
-    </a>
-
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=13">
-      <div class="thumb" style="background-image:url('images/lucky-wheel.png')"></div>
-      <div class="meta">
-        <div class="title">Lucky Wheel</div>
-        <div class="tags"><span class="tag casino">Casino</span><span class="tag gamecode">SIC_13</span></div>
-      </div>
-    </a>
-
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=18">
-      <div class="thumb placeholder">
-        <img class="ph-logo for-dark"  src="images/logo-icon-white.png" alt="" aria-hidden="true">
-        <img class="ph-logo for-light" src="images/logo-icon-black.png" alt="" aria-hidden="true">
-        <div class="ph-text">Royal Spin Once</div>
-      </div>
-      <div class="meta">
-        <div class="title">Royal Spin Once</div>
-        <div class="tags"><span class="tag instant">Instant</span><span class="tag gamecode">SIC_18</span></div>
-      </div>
-    </a>
-
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=20">
-      <div class="thumb placeholder">
-        <img class="ph-logo for-dark"  src="images/logo-icon-white.png" alt="" aria-hidden="true">
-        <img class="ph-logo for-light" src="images/logo-icon-black.png" alt="" aria-hidden="true">
-        <div class="ph-text">InstantPL</div>
-      </div>
-      <div class="meta">
-        <div class="title">InstantPL</div>
-        <div class="tags"><span class="tag instant">Instant</span><span class="tag gamecode">SIC_20</span></div>
-      </div>
-    </a>
-
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=22">
-      <div class="thumb" style="background-image:url('images/wild-jungle.png')"></div>
-      <div class="meta">
-        <div class="title">Wild Jungle</div>
-        <div class="tags"><span class="tag slot">Slot</span><span class="tag gamecode">SIC_22</span></div>
-      </div>
-    </a>
-
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=23">
-      <div class="thumb" style="background-image:url('images/instantvfl.png')"></div>
-      <div class="meta">
-        <div class="title">InstantVFL</div>
-        <div class="tags"><span class="tag vfl">VFL</span><span class="tag gamecode">SIC_23</span></div>
-      </div>
-    </a>
-
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=25">
-      <div class="thumb" style="background-image:url('images/tikiplinko.png')"></div>
-      <div class="meta">
-        <div class="title">TikiPlinko</div>
-        <div class="tags"><span class="tag casino">Casino</span><span class="tag gamecode">SIC_25</span></div>
-      </div>
-    </a>
-
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=26">
-      <div class="thumb" style="background-image:url('images/milan-slot.png')"></div>
-      <div class="meta">
-        <div class="title">Milan Slot</div>
-        <div class="tags"><span class="tag slot">Slot</span><span class="tag gamecode">SIC_26</span></div>
+        <div class="tags"><span class="tag casino">Casino</span></div>
       </div>
     </a>
 
@@ -906,19 +665,95 @@
       <div class="thumb" style="background-image:url('images/willy-win.png')"></div>
       <div class="meta">
         <div class="title">Willy Win</div>
-        <div class="tags"><span class="tag slot">Slot</span><span class="tag gamecode">SIC_27</span></div>
+        <div class="tags"><span class="tag slot">Slot</span></div>
       </div>
     </a>
 
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=28">
-      <div class="thumb placeholder">
-        <img class="ph-logo for-dark"  src="images/logo-icon-white.png" alt="" aria-hidden="true">
-        <img class="ph-logo for-light" src="images/logo-icon-black.png" alt="" aria-hidden="true">
-        <div class="ph-text">Luxury Slot</div>
-      </div>
+    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=4">
+      <div class="thumb" style="background-image:url('images/triple-towers.png')"></div>
       <div class="meta">
-        <div class="title">Luxury Slot</div>
-        <div class="tags"><span class="tag slot">Slot</span><span class="tag gamecode">SIC_28</span></div>
+        <div class="title">Triple Towers</div>
+        <div class="tags"><span class="tag slot">Slot</span></div>
+      </div>
+    </a>
+
+    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=8">
+      <div class="thumb" style="background-image:url('images/treasure-tavern.png')"></div>
+      <div class="meta">
+        <div class="title">Treasure Tavern</div>
+        <div class="tags"><span class="tag slot">Slot</span></div>
+      </div>
+    </a>
+
+    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=9">
+      <div class="thumb" style="background-image:url('images/burning-hot-classics.png')"></div>
+      <div class="meta">
+        <div class="title">Burning Hot Classics</div>
+        <div class="tags"><span class="tag slot">Slot</span></div>
+      </div>
+    </a>
+
+    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=22">
+      <div class="thumb" style="background-image:url('images/wild-jungle.png')"></div>
+      <div class="meta">
+        <div class="title">Wild Jungle</div>
+        <div class="tags"><span class="tag slot">Slot</span></div>
+      </div>
+    </a>
+
+    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=26">
+      <div class="thumb" style="background-image:url('images/milan-slot.png')"></div>
+      <div class="meta">
+        <div class="title">Milan Slot</div>
+        <div class="tags"><span class="tag slot">Slot</span></div>
+      </div>
+    </a>
+
+    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=33">
+      <div class="thumb" style="background-image:url('images/fake-luxury.png')"></div>
+      <div class="meta">
+        <div class="title">Fake Luxury</div>
+        <div class="tags"><span class="tag slot">Slot</span></div>
+      </div>
+    </a>
+
+    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=6">
+      <div class="thumb" style="background-image:url('images/tt-on-reels.png')"></div>
+      <div class="meta">
+        <div class="title">TT on reels</div>
+        <div class="tags"><span class="tag instant">Instant</span></div>
+      </div>
+    </a>
+
+    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=13">
+      <div class="thumb" style="background-image:url('images/lucky-wheel.png')"></div>
+      <div class="meta">
+        <div class="title">Lucky Wheel</div>
+        <div class="tags"><span class="tag casino">Casino</span></div>
+      </div>
+    </a>
+
+    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=18">
+      <div class="thumb" style="background-image:url('images/royal-spin-once.png')"></div>
+      <div class="meta">
+        <div class="title">Royal Spin Once</div>
+        <div class="tags"><span class="tag instant">Instant</span></div>
+      </div>
+    </a>
+
+    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=20">
+      <div class="thumb" style="background-image:url('images/instantpl.png')"></div>
+      <div class="meta">
+        <div class="title">InstantPL</div>
+        <div class="tags"><span class="tag instant">Instant</span></div>
+      </div>
+    </a>
+
+    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=25">
+      <div class="thumb" style="background-image:url('images/tikiplinko.png')"></div>
+      <div class="meta">
+        <div class="title">TikiPlinko</div>
+        <div class="tags"><span class="tag casino">Casino</span></div>
       </div>
     </a>
 
@@ -926,7 +761,7 @@
       <div class="thumb" style="background-image:url('images/vfl-serie-a.png')"></div>
       <div class="meta">
         <div class="title">VFL Italian Serie A</div>
-        <div class="tags"><span class="tag vfl">VFL</span><span class="tag gamecode">SIC_29</span></div>
+        <div class="tags"><span class="tag vfl">VFL</span></div>
       </div>
     </a>
 
@@ -934,7 +769,7 @@
       <div class="thumb" style="background-image:url('images/vfl-epl.png')"></div>
       <div class="meta">
         <div class="title">VFL English Premier League</div>
-        <div class="tags"><span class="tag vfl">VFL</span><span class="tag gamecode">SIC_30</span></div>
+        <div class="tags"><span class="tag vfl">VFL</span></div>
       </div>
     </a>
 
@@ -942,7 +777,7 @@
       <div class="thumb" style="background-image:url('images/vfl-french-liga.png')"></div>
       <div class="meta">
         <div class="title">VFL French Liga</div>
-        <div class="tags"><span class="tag vfl">VFL</span><span class="tag gamecode">SIC_31</span></div>
+        <div class="tags"><span class="tag vfl">VFL</span></div>
       </div>
     </a>
 
@@ -950,19 +785,7 @@
       <div class="thumb" style="background-image:url('images/vfl-spanish-la-liga.png')"></div>
       <div class="meta">
         <div class="title">VFL Spanish La Liga</div>
-        <div class="tags"><span class="tag vfl">VFL</span><span class="tag gamecode">SIC_32</span></div>
-      </div>
-    </a>
-
-    <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=33">
-      <div class="thumb placeholder">
-        <img class="ph-logo for-dark"  src="images/logo-icon-white.png" alt="" aria-hidden="true">
-        <img class="ph-logo for-light" src="images/logo-icon-black.png" alt="" aria-hidden="true">
-        <div class="ph-text">Fake Luxury</div>
-      </div>
-      <div class="meta">
-        <div class="title">Fake Luxury</div>
-        <div class="tags"><span class="tag slot">Slot</span><span class="tag gamecode">SIC_33</span></div>
+        <div class="tags"><span class="tag vfl">VFL</span></div>
       </div>
     </a>
 
@@ -996,27 +819,11 @@
 
   <script>
     (function () {
-      var LS_LANG     = 'solidicon-retail-lang';
-      var LS_CUR      = 'solidicon-retail-currency';
-      var LS_ADV      = 'solidicon-retail-advanced';
-      var LS_WALLET   = 'solidicon-retail-wallet';
-      var LS_BRANDING = 'solidicon-retail-branding';
-      var LS_OPERATOR = 'solidicon-retail-operator';
-      var LS_HOMEURL  = 'solidicon-retail-homeurl';
-      var LS_ISREAL   = 'solidicon-retail-isreal';
-      var LS_ALLOWFS  = 'solidicon-retail-allowfs';
-      var LS_BGFILL   = 'solidicon-retail-bgfill';
+      var LS_LANG = 'solidicon-retail-lang';
+      var LS_CUR  = 'solidicon-retail-currency';
 
-      var langSel      = document.getElementById('langSel');
-      var curSel       = document.getElementById('curSel');
-      var advToggle    = document.getElementById('advToggle');
-      var walletInp    = document.getElementById('walletInp');
-      var brandingInp  = document.getElementById('brandingInp');
-      var operatorInp  = document.getElementById('operatorInp');
-      var homeUrlInp   = document.getElementById('homeUrlInp');
-      var isRealChk    = document.getElementById('isRealChk');
-      var allowFsChk   = document.getElementById('allowFsChk');
-      var bgFillChk    = document.getElementById('bgFillChk');
+      var langSel = document.getElementById('langSel');
+      var curSel  = document.getElementById('curSel');
 
       var player        = document.getElementById('player');
       var playerFrame   = document.getElementById('playerFrame');
@@ -1032,21 +839,6 @@
         ptCollapseBtn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
         ptCollapseBtn.title = expanded ? 'Hide controls' : 'Show controls';
         ptCollapseBtn.setAttribute('aria-label', ptCollapseBtn.title);
-      });
-
-      function syncDev() {
-        document.body.classList.toggle('dev-on', advToggle.checked);
-        document.querySelectorAll('[data-tip]').forEach(function (el) {
-          if (advToggle.checked || el.dataset.tipAlways === '1') el.title = el.dataset.tip;
-          else el.removeAttribute('title');
-        });
-      }
-
-      advToggle.checked = localStorage.getItem(LS_ADV) === '1';
-      advToggle.addEventListener('change', function () {
-        localStorage.setItem(LS_ADV, advToggle.checked ? '1' : '0');
-        syncDev();
-        apply();
       });
 
       var loadingTimer = null;
@@ -1107,117 +899,37 @@
         });
       });
 
-      langSel.value     = localStorage.getItem(LS_LANG)     || 'en';
-      curSel.value      = localStorage.getItem(LS_CUR)      || 'eur';
-      walletInp.value   = localStorage.getItem(LS_WALLET)   || '';
-      brandingInp.value = localStorage.getItem(LS_BRANDING) || '';
-      operatorInp.value = localStorage.getItem(LS_OPERATOR) || '';
-      homeUrlInp.value  = localStorage.getItem(LS_HOMEURL)  || '';
-      isRealChk.checked  = localStorage.getItem(LS_ISREAL)  === '1';
-      allowFsChk.checked = localStorage.getItem(LS_ALLOWFS) === '1';
-      bgFillChk.checked  = localStorage.getItem(LS_BGFILL)  === '1';
+      langSel.value = localStorage.getItem(LS_LANG) || 'en';
+      curSel.value  = localStorage.getItem(LS_CUR)  || 'eur';
 
       function apply() {
-        var lang   = langSel.value;
-        var cur    = curSel.value;
-        var devOn  = advToggle.checked;
-        var wallet   = devOn ? walletInp.value.trim()   : '';
-        var branding = devOn ? brandingInp.value.trim() : '';
-        var operator = devOn ? operatorInp.value.trim() : '';
-        var homeUrl  = devOn ? homeUrlInp.value.trim()  : '';
-        var isReal   = devOn && isRealChk.checked;
-        var allowFs  = devOn && allowFsChk.checked;
-        var bgFill   = devOn && bgFillChk.checked;
+        var lang = langSel.value;
+        var cur  = curSel.value;
 
         localStorage.setItem(LS_LANG, lang);
         localStorage.setItem(LS_CUR, cur);
-        localStorage.setItem(LS_WALLET, walletInp.value);
-        localStorage.setItem(LS_BRANDING, brandingInp.value);
-        localStorage.setItem(LS_OPERATOR, operatorInp.value);
-        localStorage.setItem(LS_HOMEURL, homeUrlInp.value);
-        localStorage.setItem(LS_ISREAL,  isRealChk.checked  ? '1' : '0');
-        localStorage.setItem(LS_ALLOWFS, allowFsChk.checked ? '1' : '0');
-        localStorage.setItem(LS_BGFILL,  bgFillChk.checked  ? '1' : '0');
 
         for (var i = 0; i < cards.length; i++) {
           var url = new URL(cards[i].dataset.base);
           var p = url.searchParams;
-
           p.set('languageCode', lang);
           p.set('currencyCode', cur);
-
-          if (wallet) {
-            p.set('FakeMode', 'test');
-            p.set('FakeWalletBalance', wallet);
-            p.set('FakeCultureCode', cur);
-            p.set('FakePlayerName', 'Tester');
-          } else {
-            p.delete('FakeMode');
-            p.delete('FakeWalletBalance');
-            p.delete('FakeCultureCode');
-            p.delete('FakePlayerName');
-          }
-
-          if (branding) p.set('branding', branding.toLowerCase());
-          else p.delete('branding');
-
-          if (operator) p.set('extraData', 'operatorcode=' + operator);
-          else p.delete('extraData');
-
-          if (homeUrl) p.set('homeUrl', homeUrl);
-          else p.delete('homeUrl');
-
-          if (isReal) p.set('isReal', 'true');
-          else p.delete('isReal');
-
-          if (allowFs) p.set('AllowFullScreenToggle', 'true');
-          else p.delete('AllowFullScreenToggle');
-
-          if (bgFill) p.set('NoBackgroundFill', 'false');
-          else p.delete('NoBackgroundFill');
-
           cards[i].href = url.toString();
         }
       }
 
       langSel.addEventListener('change', apply);
       curSel.addEventListener('change', apply);
-      walletInp.addEventListener('input', apply);
-      brandingInp.addEventListener('input', apply);
-      operatorInp.addEventListener('input', apply);
-      homeUrlInp.addEventListener('input', apply);
-      isRealChk.addEventListener('change', apply);
-      allowFsChk.addEventListener('change', apply);
-      bgFillChk.addEventListener('change', apply);
 
       var brandReset = document.getElementById('brandReset');
       function resetToDefaultView() {
         if (player.classList.contains('open')) closePlayer();
-        advToggle.checked = false;
-        walletInp.value = '';
-        brandingInp.value = '';
-        operatorInp.value = '';
-        homeUrlInp.value = '';
-        isRealChk.checked = false;
-        allowFsChk.checked = false;
-        bgFillChk.checked = false;
-        localStorage.setItem(LS_ADV, '0');
-        localStorage.setItem(LS_WALLET, '');
-        localStorage.setItem(LS_BRANDING, '');
-        localStorage.setItem(LS_OPERATOR, '');
-        localStorage.setItem(LS_HOMEURL, '');
-        localStorage.setItem(LS_ISREAL, '0');
-        localStorage.setItem(LS_ALLOWFS, '0');
-        localStorage.setItem(LS_BGFILL, '0');
-        syncDev();
-        apply();
       }
       brandReset.addEventListener('click', resetToDefaultView);
       brandReset.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); resetToDefaultView(); }
       });
 
-      syncDev();
       apply();
     })();
   </script>
