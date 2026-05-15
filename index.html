@@ -557,10 +557,10 @@
     }
     .player.viewport-portrait .iframe-stage,
     .player.viewport-landscape .iframe-stage {
+      inset: auto;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      inset: auto;
       border-radius: 22px;
       overflow: hidden;
       box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 0 3px rgba(0,172,203,0.18);
@@ -579,9 +579,8 @@
 
     .player.video iframe { pointer-events: none; }
     .player.video .iframe-stage iframe {
-      width: 118%;
-      height: 118%;
-      inset: -9%;
+      transform: scale(1.18);
+      transform-origin: center center;
     }
     .player.video #vpDesktop,
     .player.video #vpPortrait,
