@@ -320,6 +320,81 @@
     .tag.pachinko { background: #c2185b; }
     .tag.roulette { background: #0d8050; }
     .tag.keno    { background: #ca8a04; }
+    .tag.display { background: #7c3aed; }
+
+    .section-divider {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      margin: 0.6rem 0 0.1rem;
+    }
+    .section-divider .label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: 'Kanit', system-ui, sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #b18cff;
+    }
+    @media (prefers-color-scheme: light) {
+      .section-divider .label { color: #7c3aed; }
+    }
+    .section-divider .line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, rgba(124,58,237,0.45), transparent);
+    }
+    .section-divider.single-player .label { color: var(--accent-bright); }
+    @media (prefers-color-scheme: light) {
+      .section-divider.single-player .label { color: var(--accent); }
+    }
+    .section-divider.single-player .line {
+      background: linear-gradient(to right, rgba(0,172,203,0.45), transparent);
+    }
+
+    .card.display-card {
+      border-color: rgba(124,58,237,0.22);
+      background: rgba(124,58,237,0.04);
+    }
+    .card.display-card .thumb { position: relative; }
+    .card.display-card .thumb::after {
+      content: 'Display Game';
+      position: absolute;
+      bottom: 0.6rem;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0.45rem 0.9rem;
+      border-radius: 999px;
+      background: rgba(124,58,237,0.92);
+      color: #fff;
+      font-family: 'Kanit', system-ui, sans-serif;
+      font-size: 0.62rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.55), 0 0 0 6px rgba(124,58,237,0.16);
+      pointer-events: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    @media (min-width: 600px) {
+      .card.display-card .thumb::after { padding: 0.5rem 1.05rem; font-size: 0.7rem; }
+    }
+    @media (hover: hover) {
+      .card.display-card:hover {
+        border-color: #b18cff;
+        background: rgba(124,58,237,0.08);
+        box-shadow: 0 0 0 1px rgba(124,58,237,0.4), 0 10px 32px -12px rgba(124,58,237,0.5);
+      }
+      .card.display-card:hover .thumb::after {
+        transform: translateX(-50%) scale(1.06);
+        box-shadow: 0 8px 28px rgba(0,0,0,0.6), 0 0 0 8px rgba(124,58,237,0.22);
+      }
+    }
 
     .player {
       position: fixed;
@@ -329,7 +404,13 @@
       display: none;
     }
     .player.open { display: block; }
+    .iframe-stage {
+      position: absolute;
+      inset: 0;
+    }
     .player iframe {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       border: 0;
@@ -474,26 +555,37 @@
         background-size: 280px auto;
       }
     }
-    .player.viewport-portrait iframe,
-    .player.viewport-landscape iframe {
-      position: absolute;
+    .player.viewport-portrait .iframe-stage,
+    .player.viewport-landscape .iframe-stage {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+      inset: auto;
       border-radius: 22px;
+      overflow: hidden;
       box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 0 3px rgba(0,172,203,0.18);
     }
-    .player.viewport-portrait iframe {
+    .player.viewport-portrait .iframe-stage {
       height: min(95vh, 1040px);
       width: auto;
       max-width: 93vw;
       aspect-ratio: 9 / 16;
     }
-    .player.viewport-landscape iframe {
+    .player.viewport-landscape .iframe-stage {
       height: min(70vh, calc(min(95vw, 1024px) * 9 / 16));
       width: min(95vw, 1024px);
       aspect-ratio: 16 / 9;
     }
+
+    .player.video iframe { pointer-events: none; }
+    .player.video .iframe-stage iframe {
+      width: 118%;
+      height: 118%;
+      inset: -9%;
+    }
+    .player.video #vpDesktop,
+    .player.video #vpPortrait,
+    .player.video #vpLandscape { display: none; }
 
   </style>
 </head>
@@ -683,6 +775,14 @@
 
   <div class="grid">
 
+    <div class="section-divider single-player">
+      <span class="label">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        Single Player Games
+      </span>
+      <span class="line"></span>
+    </div>
+
     <a class="card" data-base="https://data.vegaszone.net/stage/pariplay/?gameCode=3">
       <div class="thumb" style="background-image:url('images/spin-win.png')"></div>
       <div class="meta">
@@ -835,10 +935,69 @@
       </div>
     </a>
 
+    <div class="section-divider">
+      <span class="label">
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        Display Games
+      </span>
+      <span class="line"></span>
+    </div>
+
+    <a class="card display-card" data-video="FoAaj20Vrbc">
+      <div class="thumb" style="background-image:url('images/spin-win.png')"></div>
+      <div class="meta">
+        <div class="title">Spin Win</div>
+      </div>
+    </a>
+
+    <a class="card display-card" data-video="CQCQU22PrEM">
+      <div class="thumb" style="background-image:url('images/color-keno.png')"></div>
+      <div class="meta">
+        <div class="title">Color Keno</div>
+      </div>
+    </a>
+
+    <a class="card display-card" data-video="eji24qv36-w">
+      <div class="thumb" style="background-image:url('images/navigator.png')"></div>
+      <div class="meta">
+        <div class="title">Navigator</div>
+      </div>
+    </a>
+
+    <a class="card display-card" data-video="iQDXGs9WrXA">
+      <div class="thumb" style="background-image:url('images/roulette.png')"></div>
+      <div class="meta">
+        <div class="title">Roulette Evo</div>
+      </div>
+    </a>
+
+    <a class="card display-card" data-video="g1IMooOlido">
+      <div class="thumb" style="background-image:url('images/greyhound.png')"></div>
+      <div class="meta">
+        <div class="title">Greyhound Racing</div>
+      </div>
+    </a>
+
+    <a class="card display-card" data-video="D3Ow847sMTQ">
+      <div class="thumb" style="background-image:url('images/triple-towers.png')"></div>
+      <div class="meta">
+        <div class="title">Horse Racing</div>
+      </div>
+    </a>
+
+    <a class="card display-card" data-video="6RCqQshe1LE">
+      <div class="thumb" style="background-image:url('images/wild-wheel.png');background-position:center 25%"></div>
+      <div class="meta">
+        <div class="title">Wild Wheel</div>
+      </div>
+    </a>
+
   </div>
 
   <div class="player" id="player" aria-hidden="true">
-    <iframe id="playerFrame" title="Game" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write" allowfullscreen></iframe>
+    <div class="iframe-stage">
+      <iframe id="playerFrame" title="Game" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write" allowfullscreen></iframe>
+    </div>
     <div class="player-spinner" id="playerSpinner" aria-hidden="true">
       <div class="ps-ring"></div>
       <div class="ps-label">Starting up…</div>
@@ -897,11 +1056,22 @@
         if (loadingTimer) clearTimeout(loadingTimer);
         loadingTimer = setTimeout(function () { player.classList.remove('loading'); }, 30000);
       }
+      function openVideo(videoId) {
+        var url = 'https://www.youtube.com/embed/' + encodeURIComponent(videoId)
+          + '?autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&rel=0&playsinline=1&fs=0&iv_load_policy=3&cc_load_policy=0&loop=1&playlist=' + encodeURIComponent(videoId);
+        playerFrame.src = url;
+        player.classList.add('open', 'loading', 'video');
+        player.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('player-open');
+        setViewport('landscape');
+        if (loadingTimer) clearTimeout(loadingTimer);
+        loadingTimer = setTimeout(function () { player.classList.remove('loading'); }, 30000);
+      }
       function closePlayer() {
         player.classList.remove('open');
         player.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('player-open');
-        player.classList.remove('viewport-portrait', 'viewport-landscape', 'loading');
+        player.classList.remove('viewport-portrait', 'viewport-landscape', 'loading', 'video');
         vpDesktop.classList.add('active');
         vpPortrait.classList.remove('active');
         vpLandscape.classList.remove('active');
@@ -931,7 +1101,11 @@
 
       playerFrame.addEventListener('load', function () {
         if (playerFrame.src && playerFrame.src !== 'about:blank') {
-          player.classList.remove('loading');
+          if (player.classList.contains('video')) {
+            setTimeout(function () { player.classList.remove('loading'); }, 700);
+          } else {
+            player.classList.remove('loading');
+          }
         }
       });
 
@@ -941,6 +1115,15 @@
           if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
           e.preventDefault();
           openPlayer(card.href);
+        });
+      });
+
+      var videoCards = document.querySelectorAll('a.card[data-video]');
+      videoCards.forEach(function (card) {
+        card.addEventListener('click', function (e) {
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+          e.preventDefault();
+          openVideo(card.dataset.video);
         });
       });
 
