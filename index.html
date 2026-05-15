@@ -1097,7 +1097,7 @@
       playerFrame.addEventListener('load', function () {
         if (playerFrame.src && playerFrame.src !== 'about:blank') {
           if (player.classList.contains('video')) {
-            setTimeout(function () { player.classList.remove('loading'); }, 700);
+            setTimeout(function () { player.classList.remove('loading'); }, 2500);
           } else {
             player.classList.remove('loading');
           }
