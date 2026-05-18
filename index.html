@@ -1042,7 +1042,30 @@
       });
 
       var loadingTimer = null;
+      // Push a synthetic history entry when the player opens so the browser
+      // back button (and OS back gesture on mobile) closes the overlay
+      // instead of navigating away from the launcher. The push happens
+      // AFTER the iframe finishes loading so our entry sits above the
+      // iframe's own cross-origin history entry — without that ordering the
+      // first back would just pop the iframe to about:blank (white screen).
+      var playerHistoryPushed = false;
+      function pushPlayerHistoryAfterLoad() {
+        if (playerHistoryPushed) return;
+        var pushOnce = function () {
+          playerFrame.removeEventListener('load', pushOnce);
+          if (playerHistoryPushed) return;
+          try { history.pushState({ playerOpen: true }, '', location.href); }
+          catch (_) {}
+          playerHistoryPushed = true;
+        };
+        playerFrame.addEventListener('load', pushOnce);
+        // Fallback if load never fires (e.g. error pages on some browsers).
+        setTimeout(function () {
+          if (player.classList.contains('open')) pushOnce();
+        }, 1200);
+      }
       function openPlayer(url) {
+        pushPlayerHistoryAfterLoad();
         playerFrame.src = url;
         player.classList.add('open', 'loading');
         player.setAttribute('aria-hidden', 'false');
@@ -1054,6 +1077,7 @@
       function openVideo(videoId) {
         var url = 'https://www.youtube.com/embed/' + encodeURIComponent(videoId)
           + '?autoplay=1&mute=1&controls=0&disablekb=1&modestbranding=1&rel=0&playsinline=1&fs=0&iv_load_policy=3&cc_load_policy=0&loop=1&playlist=' + encodeURIComponent(videoId);
+        pushPlayerHistoryAfterLoad();
         playerFrame.src = url;
         player.classList.add('open', 'loading', 'video');
         player.setAttribute('aria-hidden', 'false');
@@ -1062,7 +1086,11 @@
         if (loadingTimer) clearTimeout(loadingTimer);
         loadingTimer = setTimeout(function () { player.classList.remove('loading'); }, 30000);
       }
-      function closePlayer() {
+      function closePlayer(fromPopstate) {
+        // Guard against double-close (X click triggers history.back, which
+        // fires popstate, which would otherwise re-enter here).
+        if (!player.classList.contains('open')) return;
+        var viaPop = fromPopstate === true;
         player.classList.remove('open');
         player.setAttribute('aria-hidden', 'true');
         document.body.classList.remove('player-open');
@@ -1076,10 +1104,19 @@
         ptCollapseBtn.setAttribute('aria-label', 'Show controls');
         if (loadingTimer) { clearTimeout(loadingTimer); loadingTimer = null; }
         playerFrame.src = 'about:blank';
+        if (playerHistoryPushed && !viaPop) {
+          playerHistoryPushed = false;
+          try { history.back(); } catch (_) {}
+        } else {
+          playerHistoryPushed = false;
+        }
       }
-      playerClose.addEventListener('click', closePlayer);
+      playerClose.addEventListener('click', function () { closePlayer(); });
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && player.classList.contains('open')) closePlayer();
+      });
+      window.addEventListener('popstate', function () {
+        if (player.classList.contains('open')) closePlayer(true);
       });
 
       function setViewport(name) {
